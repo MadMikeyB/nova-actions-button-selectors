@@ -1,7 +1,7 @@
 <template>
   <div v-if="shouldShowButtons">
     <!-- Attach Related Models -->
-    <ButtonInertiaLink
+    <InertiaButton
       class="ml-4 flex-shrink-0"
       v-if="shouldShowAttachButton"
       dusk="attach-button"
@@ -23,10 +23,10 @@
           {{ __('Attach') }}
         </span>
       </slot>
-    </ButtonInertiaLink>
+    </InertiaButton>
 
     <!-- Create Related Models -->
-    <ButtonInertiaLink
+    <InertiaButton
       v-else-if="shouldShowCreateButton"
       class="ml-4 flex-shrink-0 h-9 px-4 focus:outline-none ring-primary-200 dark:ring-gray-600 focus:ring text-white dark:text-gray-800 inline-flex items-center font-bold"
       dusk="create-button"
@@ -45,7 +45,7 @@
       <span class="inline-block md:hidden">
         {{ __('Create') }}
       </span>
-    </ButtonInertiaLink>
+    </InertiaButton>
   </div>
 </template>
 
@@ -88,6 +88,6 @@ const shouldShowCreateButton = computed(() => {
 })
 
 const shouldShowButtons = computed(() => {
-  return shouldShowAttachButton || shouldShowCreateButton
+  return shouldShowAttachButton.value || shouldShowCreateButton.value
 })
 </script>

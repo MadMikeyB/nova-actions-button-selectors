@@ -158,14 +158,10 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { Button } from 'laravel-nova-ui';
 
 import { Deletable, HandlesActions, InteractsWithResourceInformation } from '@/mixins';
 
 export default {
-    components: {
-        Button,
-    },
     mixins: [Deletable, HandlesActions, InteractsWithResourceInformation],
 
     inheritAttrs: false,

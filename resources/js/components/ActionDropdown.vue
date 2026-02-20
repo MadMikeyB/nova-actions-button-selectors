@@ -91,7 +91,6 @@
 import { useActions } from '@/composables/useActions';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import { Button } from 'laravel-nova-ui';
 
 const store = useStore();
 

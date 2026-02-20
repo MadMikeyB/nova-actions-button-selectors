@@ -125,12 +125,8 @@
 <script>
 import { HandlesActions, mapProps } from '@/mixins';
 import { mapActions, mapGetters } from 'vuex';
-import { Button } from 'laravel-nova-ui';
 
 export default {
-    components: {
-        Button,
-    },
     mixins: [HandlesActions],
 
     props: {

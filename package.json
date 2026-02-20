@@ -20,7 +20,6 @@
         "inflector-js": "^1.0.1"
     },
     "dependencies": {
-        "laravel-nova-ui": "^0.4.0",
         "vuex": "^4.0.2"
     }
 }

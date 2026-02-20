@@ -13,8 +13,8 @@ Also it fixes some styling issues.
 
 
 ## Requirements
-- `php: ^8`
-- `laravel/nova: ^4`
+- `php: ^8.1`
+- `laravel/nova: ^4 || ^5`
 
 ## How to install
 ```

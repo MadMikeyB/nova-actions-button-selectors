@@ -1,8 +1,8 @@
 <template>
     <div class="flex">
-        <div v-if="actions.length > 0" :dusk="`${resource.id.value}-inline-actions`" class="mr-4 flex gap-4">
+        <div v-if="visibleActions.length > 0" :dusk="`${resource.id.value}-inline-actions`" class="mr-4 flex gap-4">
             <!-- User Actions -->
-            <template v-for="action in actions">
+            <template v-for="action in visibleActions">
                 <button
                     v-if="action.showAsButton"
                     :key="action.uriKey"
@@ -81,7 +81,7 @@
 
                         <div v-if="amountDropdownActions > 0" :dusk="`${resource.id.value}-inline-actions`" class="py-1">
                             <!-- User Actions -->
-                            <template v-for="action in actions">
+                            <template v-for="action in visibleActions">
                                 <DropdownMenuItem
                                     v-if="!action.showAsButton"
                                     :key="action.uriKey"
@@ -129,6 +129,7 @@
 <script>
 import { HandlesActions, mapProps } from '@/mixins';
 import { mapActions, mapGetters } from 'vuex';
+import { actionVisibleInContext } from '@/util/actionVisibility';
 
 export default {
     mixins: [HandlesActions],
@@ -169,12 +170,16 @@ export default {
             return this.amountDropdownActions > 0 || this.userHasAnyOptions;
         },
 
+        visibleActions() {
+            return this.actions.filter((action) => actionVisibleInContext(action, 'index'));
+        },
+
         amountButtonActions() {
-            return this.actions.filter((action) => action.showAsButton == true).length;
+            return this.visibleActions.filter((action) => action.showAsButton == true).length;
         },
 
         amountDropdownActions() {
-            return this.actions.filter((action) => !(action.showAsButton == true)).length;
+            return this.visibleActions.filter((action) => !(action.showAsButton == true)).length;
         },
 
         shouldShowPreviewLink() {

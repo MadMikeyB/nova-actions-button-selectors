@@ -91,3 +91,5 @@ You can also customize the generated button text instead of relying on the actio
 | `cssClass()` | Appends classes to the package defaults (does not replace them). |
 | `cssStyle()` | Adds inline styles directly to the button element. Useful for targeted visual overrides. |
 | `buttonText()` | Overrides the visible button label and button `title` attribute. Dropdown entries continue using the action name. |
+
+Button rendering also respects Nova action visibility settings (such as `showOnIndex()`, `onlyOnDetail()`, `hideFromIndex()`, etc.) for the current context.

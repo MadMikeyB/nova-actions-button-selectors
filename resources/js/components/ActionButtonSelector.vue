@@ -1,7 +1,7 @@
 <template>
     <div v-if="hasDropdownItems" class="flex">
         <div :dusk="`${resource.id.value}-inline-actions`" class="flex gap-4 py-0" :class="{ 'mr-4': shouldShowDropdown }">
-            <template v-for="action in actions">
+            <template v-for="action in visibleActions">
                 <button
                     v-if="action.showAsButton"
                     :key="action.uriKey"
@@ -99,11 +99,11 @@
                         </div>
 
                         <div
-                            v-if="actions.filter((action) => action.showAsButton !== true).length > 0"
+                            v-if="visibleActions.filter((action) => action.showAsButton !== true).length > 0"
                             :dusk="`${resource.id.value}-inline-actions`"
                             class="py-1"
                         >
-                            <template v-for="action in actions">
+                            <template v-for="action in visibleActions">
                                 <!-- User Actions -->
                                 <DropdownMenuItem
                                     v-if="!action.showAsButton"
@@ -162,6 +162,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { actionVisibleInContext } from '@/util/actionVisibility';
 
 import { Deletable, HandlesActions, InteractsWithResourceInformation } from '@/mixins';
 
@@ -323,7 +324,11 @@ export default {
         },
 
         hasDropdownItems() {
-            return this.actions.length > 0 || this.canModifyResource;
+            return this.visibleActions.length > 0 || this.canModifyResource;
+        },
+
+        visibleActions() {
+            return this.actions.filter((action) => actionVisibleInContext(action, 'detail'));
         },
 
         canModifyResource() {
@@ -345,7 +350,7 @@ export default {
         },
 
         shouldShowDropdown() {
-            const showInDropdownList = this.actions.filter((action) => !(action.showAsButton === true));
+            const showInDropdownList = this.visibleActions.filter((action) => !(action.showAsButton === true));
 
             return (showInDropdownList.length > 0 || this.canModifyResource);
         },

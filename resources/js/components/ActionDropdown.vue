@@ -25,14 +25,14 @@
         />
 
         <div class="ml-auto flex items-center pl-4">
-            <div v-if="actions.length > 0" class="flex">
+            <div v-if="visibleActions.length > 0" class="flex">
                 <div
                     v-if="shouldShowButtons"
                     :dusk="`${triggerDuskAttribute}-button-group`"
                     class="flex gap-4 py-0"
                     :class="{ 'mr-4': shouldShowDropdown }"
                 >
-                    <template v-for="action in actions">
+                    <template v-for="action in visibleActions">
                         <button
                             v-if="action.showAsButton"
                             :key="action.uriKey"
@@ -66,8 +66,8 @@
                             <ScrollWrap :height="250" class="divide-y divide-solid divide-gray-100 dark:divide-gray-800">
                                 <slot />
 
-                                <div v-if="actions.length > 0" class="py-1">
-                                    <template v-for="action in actions">
+                                <div v-if="visibleActions.length > 0" class="py-1">
+                                    <template v-for="action in visibleActions">
                                         <DropdownMenuItem
                                             v-if="!action.showAsButton"
                                             :key="action.uriKey"
@@ -95,6 +95,7 @@
 import { useActions } from '@/composables/useActions';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import { actionVisibleInContext } from '@/util/actionVisibility';
 
 const store = useStore();
 
@@ -126,6 +127,10 @@ const {
     actionResponseData,
 } = useActions(props, emitter, store);
 
+const visibleActions = computed(() => {
+    return props.actions.filter((action) => actionVisibleInContext(action, 'index'));
+});
+
 const runAction = () => executeAction(() => emitter('actionExecuted'));
 
 const handleResponseModalConfirm = () => {
@@ -139,14 +144,14 @@ const handleResponseModalClose = () => {
 };
 
 const shouldShowButtons = computed(() => {
-    const showInDropdownList = props.actions.filter((action) => action.showAsButton === true);
+    const showInDropdownList = visibleActions.value.filter((action) => action.showAsButton === true);
 
     return showInDropdownList.length > 0;
 });
 
 const shouldShowDropdown = computed(() => {
 
-    const showInDropdownList = props.actions.filter((action) => !(action.showAsButton === true));
+    const showInDropdownList = visibleActions.value.filter((action) => !(action.showAsButton === true));
 
     return showInDropdownList.length > 0;
 });

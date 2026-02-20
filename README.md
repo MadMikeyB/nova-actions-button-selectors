@@ -34,7 +34,7 @@ Use the trait in your action class:
 ```php
 use Lednerb\ActionButtonSelector\ShowAsButton;
 
-class MyAction extends Action
+class ToggleBanAction extends Action
 {
     use InteractsWithQueue, Queueable;
     use ShowAsButton;
@@ -47,7 +47,7 @@ Configure actions in your resource:
 public function actions(NovaRequest $request)
 {
     return [
-        Actions\ToggleBanAction::make()
+        ToggleBanAction::make()
             ->showInline()
             ->showAsButton(true)
             ->buttonText('Ban User')
@@ -77,7 +77,7 @@ Minimal native Nova 5 example:
 public function actions(NovaRequest $request)
 {
     return [
-        Actions\ToggleBanAction::make()
+        ToggleBanAction::make()
             ->showInline()
             ->onlyOnIndex(),
     ];

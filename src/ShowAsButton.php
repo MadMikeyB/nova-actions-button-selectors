@@ -30,4 +30,9 @@ trait ShowAsButton
     {
         return $this->withMeta(['cssStyle' => $cssStyle]);
     }
+
+    public function buttonText(?string $buttonText = null)
+    {
+        return $this->withMeta(['buttonText' => $buttonText]);
+    }
 }

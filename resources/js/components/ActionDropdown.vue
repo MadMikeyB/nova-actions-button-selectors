@@ -37,7 +37,7 @@
                             v-if="action.showAsButton"
                             :key="action.uriKey"
                             :dusk="`${triggerDuskAttribute}-${action.uriKey}`"
-                            :title="action.name"
+                            :title="action.buttonText || action.name"
                             :destructive="action.destructive"
                             :class="[
                                 'bg-primary-500 hover:bg-primary-400 ring-primary-200 relative inline-flex h-9 cursor-pointer items-center justify-center rounded px-3 text-sm font-bold text-white shadow focus:outline-none focus:ring dark:text-gray-900 dark:ring-gray-600',
@@ -46,7 +46,7 @@
                             :style="action.cssStyle"
                             @click="() => handleActionClick(action.uriKey)"
                         >
-                            {{ action.name }}
+                            {{ action.buttonText || action.name }}
                         </button>
                     </template>
                 </div>

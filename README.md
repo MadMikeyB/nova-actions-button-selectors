@@ -61,12 +61,33 @@ If you want to hide the button on some Detail pages, use the following method in
 You can also customize the generated button with CSS classes and inline styles:
 
 ```php
-Actions\ToggleBanAction::make()
-    ->showAsButton(true)
-    ->buttonText('Ban User')
-    ->cssClass('bg-red-500')
-    ->cssStyle('background-color: red;')
+...
+ public function actions(NovaRequest $request)
+    {
+        return [
+            MyCustomAction::make()
+                ->showAsButton(true)
+                ->cssClass('bg-red-500')
+                ->cssStyle('background-color: red;')
+            ...
+
 ```
 
-`cssClass()` appends classes to the package defaults (it does not replace them). Use `cssStyle()` or stronger utility classes to override the default appearance when needed.
-`buttonText()` overrides the visible button label (and button title attribute) while dropdown entries continue to use the action name.
+You can also customize the generated button text instead of relying on the action name:
+
+```php
+...
+ public function actions(NovaRequest $request)
+    {
+        return [
+            MyCustomAction::make()
+                ->showAsButton(true)
+                ->buttonText('My Custom Action Button')
+            ...
+```
+
+| Method | Behavior |
+| --- | --- |
+| `cssClass()` | Appends classes to the package defaults (does not replace them). |
+| `cssStyle()` | Adds inline styles directly to the button element. Useful for targeted visual overrides. |
+| `buttonText()` | Overrides the visible button label and button `title` attribute. Dropdown entries continue using the action name. |

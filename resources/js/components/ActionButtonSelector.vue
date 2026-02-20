@@ -1,21 +1,21 @@
 <template>
     <div v-if="hasDropdownItems" class="flex">
         <div :dusk="`${resource.id.value}-inline-actions`" class="flex gap-4 py-0" :class="{ 'mr-4': shouldShowDropdown }">
-            <template v-for="action in visibleActions">
+            <template v-for="action in actions">
                 <button
-                    v-if="action.showAsButton"
+                    v-if="(action.showAsButton ?? action?.meta?.showAsButton)"
                     :key="action.uriKey"
                     :dusk="`${resource.id.value}-inline-action-${action.uriKey}`"
-                    :title="action.buttonText || action.name"
+                    :title="action.buttonText || action?.meta?.buttonText || action.name"
                     :destructive="action.destructive"
                     :class="[
                         'bg-primary-500 hover:bg-primary-400 ring-primary-200 relative inline-flex h-9 cursor-pointer items-center justify-center rounded px-3 text-sm font-bold text-white shadow focus:outline-none focus:ring dark:text-gray-900 dark:ring-gray-600',
-                        action.cssClass,
+                        action.cssClass || action?.meta?.cssClass,
                     ]"
-                    :style="action.cssStyle"
+                    :style="action.cssStyle || action?.meta?.cssStyle"
                     @click="() => handleActionClick(action.uriKey)"
                 >
-                    {{ action.buttonText || action.name }}
+                    {{ action.buttonText || action?.meta?.buttonText || action.name }}
                 </button>
             </template>
         </div>
@@ -99,14 +99,14 @@
                         </div>
 
                         <div
-                            v-if="visibleActions.filter((action) => action.showAsButton !== true).length > 0"
+                            v-if="actions.filter((action) => (action.showAsButton ?? action?.meta?.showAsButton) !== true).length > 0"
                             :dusk="`${resource.id.value}-inline-actions`"
                             class="py-1"
                         >
-                            <template v-for="action in visibleActions">
+                            <template v-for="action in actions">
                                 <!-- User Actions -->
                                 <DropdownMenuItem
-                                    v-if="!action.showAsButton"
+                                    v-if="!(action.showAsButton ?? action?.meta?.showAsButton)"
                                     :key="action.uriKey"
                                     as="button"
                                     :dusk="`${resource.id.value}-inline-action-${action.uriKey}`"
@@ -162,7 +162,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { actionVisibleInContext } from '@/util/actionVisibility';
 
 import { Deletable, HandlesActions, InteractsWithResourceInformation } from '@/mixins';
 
@@ -324,11 +323,7 @@ export default {
         },
 
         hasDropdownItems() {
-            return this.visibleActions.length > 0 || this.canModifyResource;
-        },
-
-        visibleActions() {
-            return this.actions.filter((action) => actionVisibleInContext(action, 'detail'));
+            return this.actions.length > 0 || this.canModifyResource;
         },
 
         canModifyResource() {
@@ -350,7 +345,7 @@ export default {
         },
 
         shouldShowDropdown() {
-            const showInDropdownList = this.visibleActions.filter((action) => !(action.showAsButton === true));
+            const showInDropdownList = this.actions.filter((action) => !((action.showAsButton ?? action?.meta?.showAsButton) === true));
 
             return (showInDropdownList.length > 0 || this.canModifyResource);
         },

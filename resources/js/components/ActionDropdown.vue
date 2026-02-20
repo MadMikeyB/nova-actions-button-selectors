@@ -25,28 +25,28 @@
         />
 
         <div class="ml-auto flex items-center pl-4">
-            <div v-if="visibleActions.length > 0" class="flex">
+            <div v-if="actions.length > 0" class="flex">
                 <div
                     v-if="shouldShowButtons"
                     :dusk="`${triggerDuskAttribute}-button-group`"
                     class="flex gap-4 py-0"
                     :class="{ 'mr-4': shouldShowDropdown }"
                 >
-                    <template v-for="action in visibleActions">
+                    <template v-for="action in actions">
                         <button
-                            v-if="action.showAsButton"
+                            v-if="(action.showAsButton ?? action?.meta?.showAsButton)"
                             :key="action.uriKey"
                             :dusk="`${triggerDuskAttribute}-${action.uriKey}`"
-                            :title="action.buttonText || action.name"
+                            :title="action.buttonText || action?.meta?.buttonText || action.name"
                             :destructive="action.destructive"
                             :class="[
                                 'bg-primary-500 hover:bg-primary-400 ring-primary-200 relative inline-flex h-9 cursor-pointer items-center justify-center rounded px-3 text-sm font-bold text-white shadow focus:outline-none focus:ring dark:text-gray-900 dark:ring-gray-600',
-                                action.cssClass,
+                                action.cssClass || action?.meta?.cssClass,
                             ]"
-                            :style="action.cssStyle"
+                            :style="action.cssStyle || action?.meta?.cssStyle"
                             @click="() => handleActionClick(action.uriKey)"
                         >
-                            {{ action.buttonText || action.name }}
+                            {{ action.buttonText || action?.meta?.buttonText || action.name }}
                         </button>
                     </template>
                 </div>
@@ -66,10 +66,10 @@
                             <ScrollWrap :height="250" class="divide-y divide-solid divide-gray-100 dark:divide-gray-800">
                                 <slot />
 
-                                <div v-if="visibleActions.length > 0" class="py-1">
-                                    <template v-for="action in visibleActions">
+                                <div v-if="actions.length > 0" class="py-1">
+                                    <template v-for="action in actions">
                                         <DropdownMenuItem
-                                            v-if="!action.showAsButton"
+                                            v-if="!(action.showAsButton ?? action?.meta?.showAsButton)"
                                             :key="action.uriKey"
                                             :data-action-id="action.uriKey"
                                             as="button"
@@ -95,7 +95,6 @@
 import { useActions } from '@/composables/useActions';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import { actionVisibleInContext } from '@/util/actionVisibility';
 
 const store = useStore();
 
@@ -127,10 +126,6 @@ const {
     actionResponseData,
 } = useActions(props, emitter, store);
 
-const visibleActions = computed(() => {
-    return props.actions.filter((action) => actionVisibleInContext(action, 'index'));
-});
-
 const runAction = () => executeAction(() => emitter('actionExecuted'));
 
 const handleResponseModalConfirm = () => {
@@ -144,14 +139,14 @@ const handleResponseModalClose = () => {
 };
 
 const shouldShowButtons = computed(() => {
-    const showInDropdownList = visibleActions.value.filter((action) => action.showAsButton === true);
+    const showInDropdownList = props.actions.filter((action) => (action.showAsButton ?? action?.meta?.showAsButton) === true);
 
     return showInDropdownList.length > 0;
 });
 
 const shouldShowDropdown = computed(() => {
 
-    const showInDropdownList = visibleActions.value.filter((action) => !(action.showAsButton === true));
+    const showInDropdownList = props.actions.filter((action) => !((action.showAsButton ?? action?.meta?.showAsButton) === true));
 
     return showInDropdownList.length > 0;
 });

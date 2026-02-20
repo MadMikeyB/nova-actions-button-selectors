@@ -1,23 +1,23 @@
 <template>
     <div class="flex">
-        <div v-if="visibleActions.length > 0" :dusk="`${resource.id.value}-inline-actions`" class="mr-4 flex gap-4">
+        <div v-if="actions.length > 0" :dusk="`${resource.id.value}-inline-actions`" class="mr-4 flex gap-4">
             <!-- User Actions -->
-            <template v-for="action in visibleActions">
+            <template v-for="action in actions">
                 <button
-                    v-if="action.showAsButton"
+                    v-if="(action.showAsButton ?? action?.meta?.showAsButton)"
                     :key="action.uriKey"
                     as="button"
                     :dusk="`${resource.id.value}-inline-action-${action.uriKey}`"
-                    :title="action.buttonText || action.name"
+                    :title="action.buttonText || action?.meta?.buttonText || action.name"
                     :destructive="action.destructive"
                     :class="[
                         'bg-primary-500 hover:bg-primary-400 ring-primary-200 h-9 cursor-pointer items-center justify-center rounded px-3 text-sm font-bold text-white shadow focus:outline-none focus:ring dark:text-gray-900 dark:ring-gray-600',
-                        action.cssClass,
+                        action.cssClass || action?.meta?.cssClass,
                     ]"
-                    :style="action.cssStyle"
+                    :style="action.cssStyle || action?.meta?.cssStyle"
                     @click.stop="() => handleActionClick(action.uriKey)"
                 >
-                    {{ action.buttonText || action.name }}
+                    {{ action.buttonText || action?.meta?.buttonText || action.name }}
                 </button>
             </template>
         </div>
@@ -81,9 +81,9 @@
 
                         <div v-if="amountDropdownActions > 0" :dusk="`${resource.id.value}-inline-actions`" class="py-1">
                             <!-- User Actions -->
-                            <template v-for="action in visibleActions">
+                            <template v-for="action in actions">
                                 <DropdownMenuItem
-                                    v-if="!action.showAsButton"
+                                    v-if="!(action.showAsButton ?? action?.meta?.showAsButton)"
                                     :key="action.uriKey"
                                     as="button"
                                     :dusk="`${resource.id.value}-inline-action-${action.uriKey}`"
@@ -129,7 +129,6 @@
 <script>
 import { HandlesActions, mapProps } from '@/mixins';
 import { mapActions, mapGetters } from 'vuex';
-import { actionVisibleInContext } from '@/util/actionVisibility';
 
 export default {
     mixins: [HandlesActions],
@@ -170,16 +169,12 @@ export default {
             return this.amountDropdownActions > 0 || this.userHasAnyOptions;
         },
 
-        visibleActions() {
-            return this.actions.filter((action) => actionVisibleInContext(action, 'index'));
-        },
-
         amountButtonActions() {
-            return this.visibleActions.filter((action) => action.showAsButton == true).length;
+            return this.actions.filter((action) => (action.showAsButton ?? action?.meta?.showAsButton) == true).length;
         },
 
         amountDropdownActions() {
-            return this.visibleActions.filter((action) => !(action.showAsButton == true)).length;
+            return this.actions.filter((action) => !((action.showAsButton ?? action?.meta?.showAsButton) == true)).length;
         },
 
         shouldShowPreviewLink() {

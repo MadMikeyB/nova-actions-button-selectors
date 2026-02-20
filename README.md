@@ -57,3 +57,14 @@ If you want to hide the button on some Detail pages, use the following method in
 
             ...
 ```
+
+You can also customize the generated button with CSS classes and inline styles:
+
+```php
+Actions\ToggleBanAction::make()
+    ->showAsButton(true)
+    ->cssClass('bg-red-500')
+    ->cssStyle('background-color: red;')
+```
+
+`cssClass()` appends classes to the package defaults (it does not replace them). Use `cssStyle()` or stronger utility classes to override the default appearance when needed.

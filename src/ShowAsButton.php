@@ -20,4 +20,14 @@ trait ShowAsButton
     {
         return $this->withMeta(['showAsButton' => $show]);
     }
+
+    public function cssClass(?string $cssClass = null)
+    {
+        return $this->withMeta(['cssClass' => $cssClass]);
+    }
+
+    public function cssStyle(?string $cssStyle = null)
+    {
+        return $this->withMeta(['cssStyle' => $cssStyle]);
+    }
 }

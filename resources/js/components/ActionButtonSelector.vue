@@ -214,7 +214,10 @@ export default {
                 );
 
                 if (response && response.data && response.data.redirect) {
-                    Nova.visit(response.data.redirect);
+                    const redirect = response.data.redirect;
+                    const redirectUrl = typeof redirect === 'object' ? redirect.url : redirect;
+
+                    Nova.visit(redirectUrl);
                     return;
                 }
 
@@ -284,7 +287,10 @@ export default {
                 );
 
                 if (response && response.data && response.data.redirect) {
-                    Nova.visit(response.data.redirect);
+                    const redirect = response.data.redirect;
+                    const redirectUrl = typeof redirect === 'object' ? redirect.url : redirect;
+
+                    Nova.visit(redirectUrl);
                     return;
                 }
 

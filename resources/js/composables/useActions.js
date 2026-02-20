@@ -246,7 +246,16 @@ export function useActions(props, emitter, store) {
     }
 
     if (data.redirect) {
-      window.location = data.redirect
+      const redirectUrl =
+        typeof data.redirect === 'object' ? data.redirect.url : data.redirect
+      const openInNewTab =
+        typeof data.redirect === 'object' && data.redirect.openInNewTab === true
+
+      if (openInNewTab) {
+        return emitResponseCallback(() => window.open(redirectUrl, '_blank'))
+      }
+
+      window.location = redirectUrl
     }
 
     if (data.visit) {
@@ -257,8 +266,13 @@ export function useActions(props, emitter, store) {
     }
 
     if (data.openInNewTab) {
+      const openInNewTabUrl =
+        typeof data.openInNewTab === 'object'
+          ? data.openInNewTab.url
+          : data.openInNewTab
+
       return emitResponseCallback(() =>
-        window.open(data.openInNewTab, '_blank')
+        window.open(openInNewTabUrl, '_blank')
       )
     }
 

@@ -209,15 +209,33 @@ export default {
           document.body.removeChild(link)
         })
       } else if (data.redirect) {
-        window.location = data.redirect
+        const redirectUrl =
+          typeof data.redirect === 'object' ? data.redirect.url : data.redirect
+        const openInNewTab =
+          typeof data.redirect === 'object' && data.redirect.openInNewTab === true
+
+        if (openInNewTab) {
+          this.emitResponseCallback(() => {
+            window.open(redirectUrl, '_blank')
+          })
+
+          return
+        }
+
+        window.location = redirectUrl
       } else if (data.visit) {
         Nova.visit({
           url: Nova.url(data.visit.path, data.visit.options),
           remote: false,
         })
       } else if (data.openInNewTab) {
+        const openInNewTabUrl =
+          typeof data.openInNewTab === 'object'
+            ? data.openInNewTab.url
+            : data.openInNewTab
+
         this.emitResponseCallback(() => {
-          window.open(data.openInNewTab, '_blank')
+          window.open(openInNewTabUrl, '_blank')
         })
       } else {
         let message =
